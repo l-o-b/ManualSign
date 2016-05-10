@@ -21,6 +21,13 @@ namespace MVCPractic.Controllers
         {
             return View();
         }
+
+        public ActionResult ShowDocument(int documentId)
+        {
+            //здесь вызываем код, который загружает данные из базы и передает их в представление. Представление - отрисовывает документ
+            return View();
+        }
+
         [HttpPost]
         public ActionResult Upload(tbContent pic, HttpPostedFileBase upload)
         {
@@ -32,14 +39,12 @@ namespace MVCPractic.Controllers
                     // получаем имя файла
                     string fileName = Path.GetFileName(upload.FileName);
                     // сохраняем файл в папку Files в проекте
-                    upload.SaveAs(Server.MapPath("~/Files/" + fileName));
-                    string startupPath = "C:\\Users\\Users\\Documents\\Visual Studio 2015\\Projects\\MVCPractic\\MVCPractic\\Files";
+                    var startupPath = Server.MapPath("~/Files");//"C:\\Users\\Users\\Documents\\Visual Studio 2015\\Projects\\MVCPractic\\MVCPractic\\Files";
                     var docPath = Path.Combine(startupPath, fileName);
-                    Application app = new Application();
-                    Microsoft.Office.Interop.Word.Document doc = new Microsoft.Office.Interop.Word.Document();
-                    app.Visible = false;
+                    upload.SaveAs(docPath);
+                    Application app = new Application {Visible = false};
                     //открываем документ
-                    doc = app.Documents.Open(docPath);
+                    var doc = app.Documents.Open(docPath);
                     doc.ShowGrammaticalErrors = false;
                     doc.ShowRevisions = false;
                     doc.ShowSpellingErrors = false;
@@ -79,7 +84,8 @@ namespace MVCPractic.Controllers
                                         db.Contents.Add(pic);
                                         db.SaveChanges();
                                         //получается так что изображение не отображается, надо как то выводить через метод... 
-
+                                        //ToDo: нужно также сделать сохранение всего документа в базу и нормальный редирект с айдишником документа, а не страницы (надо будет редирект вынести из цикла)
+                                        return RedirectToAction("ShowDocument", new {documentId = pic.ContentId});
                                     }
                                 }
 
