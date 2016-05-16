@@ -5,4 +5,5 @@ document.getElementById('btn').onclick = function () {
     newBtn.id='vod+';
     newBtn.type="checkbox";
     document.body.appendChild(newBtn);
+    dragMaster.makeDraggable(newBtn);
 }
